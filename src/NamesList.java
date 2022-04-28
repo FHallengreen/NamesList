@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +13,7 @@ public class NamesList {
         names = new ArrayList<>();
     }
 
-    public void startUserInterface() {
+    public void startUserInterface() throws IOException {
         System.out.println("""
                 Welcome to the NamesList - enterprise edition.
                 ----------------------------------------------
@@ -60,17 +64,34 @@ public class NamesList {
         System.out.println("Done");
     }
 
-    private void saveListOfNames() {
-        // TODO: Implement save of the names list to a file
-        System.out.println("NOT IMPLEMENTED");
+    private void saveListOfNames() throws IOException {
+        PrintStream out = new PrintStream(new File("tekst.txt"));
+        for (String name: names) {
+            out.println(name);
+        }
     }
 
-    private void loadListOfNames() {
-        // TODO: Implement load of the names list from a file
-        System.out.println("NOT IMPLEMENTED");
+    private void loadListOfNames() throws FileNotFoundException {
+
+        File file = new File("names.txt");
+        try {
+
+            Scanner sc = new Scanner(file);
+            String name = "-nothing yet-";
+            while (!name.isBlank() && sc.hasNextLine()) {
+                name = sc.nextLine();
+                if (!name.isBlank()) {
+                    names.add(name);
+                    System.out.println(name + " added to the list, enter another, or empty to quit");
+                }
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void displayListOfNames() {
+    private void displayListOfNames() throws FileNotFoundException {
         for(String name : names) {
             System.out.println(name);
         }
@@ -81,6 +102,7 @@ public class NamesList {
             s = "";
         }
         System.out.println("There " + isAre + " " + names.size() + " name"+s+" in the system");
+
     }
 
     private void exit() {
@@ -92,7 +114,7 @@ public class NamesList {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         NamesList app = new NamesList();
         app.startUserInterface();
     }
